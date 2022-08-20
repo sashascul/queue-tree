@@ -5,9 +5,16 @@
 
 #define LEN 20
 
+typedef struct {
+
+  char title[LEN];
+  char author[LEN];
+
+} Book;
+
 typedef struct tree {
 
-  int key;
+  Book param;
   struct tree * right;
   struct tree * left;
   struct tree * parent;
@@ -15,22 +22,32 @@ typedef struct tree {
 } Node;
 
 
-void InitializeTree (Node * pt, int key);
-Node * AddItem (Node * ptn, int key);
+void InitializeTree (Node * pt, Book key);
+Node * AddItem (Node * ptn, Book key);
 
 
 int main (void) {
 
   Node tree;
-  int key;
+  Book key;
 
-  scanf ("%d", &key);
+  puts ("Input title of book:");
+  gets (key.title);
+  puts ("Input author this book:");
+  gets (key.author);
 
   InitializeTree (&tree, key);
 
-  while (scanf ("%d", &key) == 1) {
+  puts ("Input title of book:");
+
+  while (gets (key.title) != NULL && key.title[0] != '\0') {
+
+    puts ("Input author this book:");
+    gets (key.author);
 
     AddItem (&tree, key);
+
+    puts ("Input title of book:");
 
   }
 
@@ -38,20 +55,29 @@ int main (void) {
   ptr = (Node * ) malloc (sizeof (Node));
   ptr = &tree;
 
+  puts ("Left branch:");
+
   while (ptr != 0) {
 
-    printf ("%d\n", ptr->key);
+    puts ((ptr->param).title);
     ptr = ptr->left;
 
   }
 
+  putchar ('\n');
+  putchar ('\n');
+  puts ("Right branch:");
 
+  while (ptr != 0) {
+
+    puts ((ptr->param).title);
+    ptr = ptr->right;
+
+  }
 
 }
 
-void InitializeTree (Node * pt, int key) {
-
-  int numRoot;
+void InitializeTree (Node * pt, Book key) {
 
   Node * memTree;
   memTree = (Node * ) malloc (sizeof (Node));
@@ -59,29 +85,40 @@ void InitializeTree (Node * pt, int key) {
   pt->right = NULL;
   pt->left = NULL;
   pt->parent = NULL;
-  pt->key = key;
+  pt->param = key;
 
   pt = memTree;
 
 
 }
 
-Node * AddItem (Node * ptn, int key) {
+Node * AddItem (Node * ptn, Book key) {
 
   Node * mem, * start = ptn, * start_help;
   mem = (Node * ) malloc (sizeof (Node));
 
-  mem->key = key;
+  mem->param = key;
 
   while (start != NULL) {
 
     start_help = start;
 
-    if (key <= start->key)
+    if (strcmp (key.title, (start->param).title) > 0) {
+
       start = start->left;
+      continue;
+
+    }
+
+    if (strcmp (key.title, (start->param).title) < 0) {
+
+      start = start->right;
+      continue;
+
+    }
 
     else
-      start = start->right;
+      exit (1);
 
   }
 
@@ -89,12 +126,19 @@ Node * AddItem (Node * ptn, int key) {
   mem->left = NULL;
   mem->right = NULL;
 
-  if (key < start_help->key)
+  if (strcmp (key.title, (start_help->param).title) > 0) {
+
     start_help->left = mem;
+    return ptn;
 
-  else
+  }
+
+  if (strcmp (key.title, (start_help->param).title) > 0) {
+
     start_help->right = mem;
+    return ptn;
 
-  return ptn;
+  }
+
 
 }
