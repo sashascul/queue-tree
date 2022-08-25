@@ -23,6 +23,7 @@ typedef struct tree {
 void InitializateTree (Tree * pt, Object obj);
 void AddItem (Tree * pt, Object obj);
 void expAdd (Tree * save, Tree * memTree);
+void ExploreNode (Tree * pt, char obj[]);
 
 
 int main (void) {
@@ -49,6 +50,8 @@ int main (void) {
 
 
   }
+
+  /*
 
   puts ("Left branch:");
 
@@ -77,6 +80,14 @@ int main (void) {
     ptRight = ptRight->right;
 
   }
+
+  */
+
+  char book[LEN];
+  puts ("Explore of block. Input title any book:");
+  gets (book);
+
+  ExploreNode (&temp, book);
 
   return 0;
 }
@@ -141,5 +152,34 @@ void expAdd (Tree * save, Tree * memTree) {
 
   }
 
+}
+
+void ExploreNode (Tree * pt, char obj[]) {
+
+  Tree * exp;
+  exp = (Tree * ) malloc (sizeof (Tree));
+  exp = pt;
+
+  if ((exp->object).title == obj) {
+
+    puts ("This tree contain this book. Adress this block:");
+    printf ("%p", exp);
+    return;
+
+  }
+
+  if (strcmp (obj, (exp->object).title) < 0) {
+
+    exp = exp->left;
+    ExploreNode (exp, obj);
+
+  }
+
+  if (strcmp (obj, (exp->object).title) > 0) {
+
+    exp = exp->right;
+    ExploreNode (exp, obj);
+
+  }
 
 }
