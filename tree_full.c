@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define LEN 50
 
@@ -23,8 +24,9 @@ typedef struct tree {
 void InitializateTree (Tree * pt, Object obj);
 void AddItem (Tree * pt, Object obj);
 void expAdd (Tree * save, Tree * memTree);
-void ExploreNode (Tree * pt, char obj[]);
-void Explore (Tree * pt, char exp[]);
+short ExploreNode (Tree * pt, char book[], Tree ** save);
+void Explore (Tree * pt, char book[]);
+void DestroyNode (Tree * pt, char book[]);
 
 
 int main (void) {
@@ -52,7 +54,9 @@ int main (void) {
 
   }
 
-  /*
+
+
+  goto label;
 
   puts ("Left branch:");
 
@@ -82,13 +86,24 @@ int main (void) {
 
   }
 
-  */
+  label:
+
+  /*
 
   char book[LEN];
   puts ("Explore of block. Input title any book:");
   gets (book);
 
   Explore (&temp, book);
+
+  */
+
+
+  char book[LEN];
+  puts ("Input title of book, which needing destroy:");
+  gets (book);
+
+
 
   return 0;
 }
@@ -153,7 +168,6 @@ void expAdd (Tree * save, Tree * memTree) {
 
   }
 
-
 }
 
 void Explore (Tree * pt, char book[]) {
@@ -162,41 +176,49 @@ void Explore (Tree * pt, char book[]) {
   mem = (Tree * ) malloc (sizeof (Tree));
   mem = pt;
 
-  ExploreNode (mem, book);
+  Tree * str;
 
-}
+  short result = ExploreNode (mem, book, &str);
 
-void ExploreNode (Tree * pt, char book[]) {
+  switch (result) {
 
-  if (pt == NULL) {
-
-    puts ("This tree don't contain this book!");
-    return;
+    case 0:
+      puts ("This tree don't contain this book!");
+      break;
+    case 1:
+      puts ("This tree contain this book. Adress this block: ");
+      printf ("%p", str);
+    default:
+      break;
 
   }
 
+}
+
+short ExploreNode (Tree * pt, char book[], Tree ** save) {
+
+  if (pt == NULL)
+    return 0;
+
   if (strcmp ((pt->object).title, book) == 0) {
 
-    puts ("This tree contain this book. Adress this block:");
-    printf ("%p", pt);
-    putchar ('\n');
-    return;
+    * save = pt;
+    return 1;
 
   }
 
   if (strcmp (book, (pt->object).title) < 0) {
 
     pt = pt->left;
-    ExploreNode (pt, book);
+    ExploreNode (pt, book, save);
 
   }
 
   if (strcmp (book, (pt->object).title) > 0) {
 
     pt = pt->right;
-    ExploreNode (pt, book);
+    ExploreNode (pt, book, save);
 
   }
-
 
 }
