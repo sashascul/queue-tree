@@ -24,6 +24,7 @@ void InitializateTree (Tree * pt, Object obj);
 void AddItem (Tree * pt, Object obj);
 void expAdd (Tree * save, Tree * memTree);
 void ExploreNode (Tree * pt, char obj[]);
+void Explore (Tree * pt, char exp[]);
 
 
 int main (void) {
@@ -87,7 +88,7 @@ int main (void) {
   puts ("Explore of block. Input title any book:");
   gets (book);
 
-  ExploreNode (&temp, book);
+  Explore (&temp, book);
 
   return 0;
 }
@@ -152,34 +153,50 @@ void expAdd (Tree * save, Tree * memTree) {
 
   }
 
+
 }
 
-void ExploreNode (Tree * pt, char obj[]) {
+void Explore (Tree * pt, char book[]) {
 
-  Tree * exp;
-  exp = (Tree * ) malloc (sizeof (Tree));
-  exp = pt;
+  Tree * mem;
+  mem = (Tree * ) malloc (sizeof (Tree));
+  mem = pt;
 
-  if ((exp->object).title == obj) {
+  ExploreNode (mem, book);
 
-    puts ("This tree contain this book. Adress this block:");
-    printf ("%p", exp);
+}
+
+void ExploreNode (Tree * pt, char book[]) {
+
+  if (pt == NULL) {
+
+    puts ("This tree don't contain this book!");
     return;
 
   }
 
-  if (strcmp (obj, (exp->object).title) < 0) {
+  if (strcmp ((pt->object).title, book) == 0) {
 
-    exp = exp->left;
-    ExploreNode (exp, obj);
+    puts ("This tree contain this book. Adress this block:");
+    printf ("%p", pt);
+    putchar ('\n');
+    return;
+
+  }
+
+  if (strcmp (book, (pt->object).title) < 0) {
+
+    pt = pt->left;
+    ExploreNode (pt, book);
 
   }
 
-  if (strcmp (obj, (exp->object).title) > 0) {
+  if (strcmp (book, (pt->object).title) > 0) {
 
-    exp = exp->right;
-    ExploreNode (exp, obj);
+    pt = pt->right;
+    ExploreNode (pt, book);
 
   }
+
 
 }
