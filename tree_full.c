@@ -27,6 +27,7 @@ void expAdd (Tree * save, Tree * memTree);
 short ExploreNode (Tree * pt, char book[], Tree ** save);
 void Explore (Tree * pt, char book[]);
 void DestroyNode (Tree * pt, char book[]);
+void Destroy (Tree * pt, Object obj);
 
 
 int main (void) {
@@ -99,9 +100,13 @@ int main (void) {
   */
 
 
-  char book[LEN];
+  Object object;
   puts ("Input title of book, which needing destroy:");
-  gets (book);
+  gets (object.title);
+  puts ("Input author this book, which needing destroy:");
+  gets (object.author);
+
+  Destroy (&temp, object);
 
 
 
@@ -220,5 +225,28 @@ short ExploreNode (Tree * pt, char book[], Tree ** save) {
     ExploreNode (pt, book, save);
 
   }
+
+}
+
+void Destroy (Tree * pt, Object obj) {
+
+
+  /*  ----------/--------
+      -------node1-------
+      --node2-----NULL---
+      -------------------
+  */
+
+  /*  ----------/--------
+      -------node1-------
+      --NULL-----node2---
+      -------------------
+  */
+
+  /*  ----------/--------
+      -------node1-------
+      --node2-----node3--
+      -------------------
+  */
 
 }
