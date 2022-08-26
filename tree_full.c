@@ -36,12 +36,12 @@ void Right (Tree * pt, Tree * save);
 
 int main (void) {
 
-    /* ##### rus-location ###*/
-
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
-
-    /*#########################*/
+    /* ##### rus-location ######*/
+                               ///
+    SetConsoleCP(1251);        ///
+    SetConsoleOutputCP(1251);  ///
+                               ///
+    /*##########################*/
 
 
 
@@ -123,6 +123,14 @@ int main (void) {
 
 }
 
+
+/* Operation: This function initializes tree.                     */
+/* Predconditions: This function gets pointer of tree and         */
+/* compared object.                                               */
+/* Postconditions: Start root of tree initializes to null-objects */
+/* and recieved object: left pointer of root = null;              */
+/*                      right pointer of root = null;             */
+/*                      object of root tree = recieved object;    */
 void InitializateTree (Tree * pt, Object obj) {
 
     pt->object = obj;
@@ -131,6 +139,16 @@ void InitializateTree (Tree * pt, Object obj) {
 
 }
 
+
+/* Operation: This function adds object in the tree.              */
+/* Predconditions: This function gets pointer of tree and         */
+/* compared object.                                               */
+/* Postconditions: First, first comes memory allocation for tree  */
+/* Start root of tree initializes to null-objects                 */
+/* and recieved object: left pointer of root = null;              */
+/*                      right pointer of root = null;             */
+/*                      object of root tree = recieved object;    */
+/* Further The function "expAdd" start to work.                   */
 void AddItem (Tree * pt, Object obj) {
 
     Tree * memTree, * save;
@@ -145,6 +163,12 @@ void AddItem (Tree * pt, Object obj) {
 
 }
 
+
+/* Operation: Search for a specific element, which need in adding.*/
+/* Predconditions: This function gets pointer of tree and         */
+/* pointer for previously allocated memory.                       */
+/* Postconditions: there is a comparison of elements by branches. */
+/* Adding element adds in the end of tree.                        */
 void expAdd (Tree * save, Tree * memTree) {
 
     if (strcmp ((memTree->object).title, (save->object).title) < 0) {
@@ -185,6 +209,14 @@ void expAdd (Tree * save, Tree * memTree) {
 
 }
 
+
+/* Operation: Search for a specific element, which need in        */
+/* destroying.                                                    */
+/* Predconditions: This function gets pointer of tree and         */
+/* compared object.                                               */
+/* Postconditions: there is a comparison of elements by branches. */
+/* this function allocates memory. It is needed for the           */
+/* function "ExploreNode()".                                      */
 void Explore (Tree * pt, Object book) {
 
     Tree * mem;
@@ -209,6 +241,12 @@ void Explore (Tree * pt, Object book) {
 
 }
 
+
+/* Operation: Search for a specific element, which need in        */
+/* destroying.                                                    */
+/* Predconditions: This function gets pointer of tree,            */
+/* compared object and pointer.                                   */
+/* Postconditions: this function looks for an element.            */
 bool ExploreNode (Tree * pt, Object book, Tree ** save) {
 
 	if (pt == NULL)
@@ -235,6 +273,11 @@ bool ExploreNode (Tree * pt, Object book, Tree ** save) {
 
 }
 
+
+/* Operation: Destroying elements in the tree.                    */
+/* Predconditions: This function gets pointer of tree and         */
+/* compared object.                                               */
+/* Postconditions: this function destroys for an element.         */
 void Destroy (Tree * pt, Object obj) {
 
     Tree * adr;
@@ -260,6 +303,13 @@ void Destroy (Tree * pt, Object obj) {
 
 }
 
+
+
+/* Operation: Search for a node, which need destroying.           */
+/* Predconditions: This function gets pointer of tree,            */
+/* pointer of saved adress block and compared object.             */
+/* Postconditions: searches for the specified block to delete     */
+/* later                                                          */
 void expDestroyBlock (Tree * pt, Tree * adr, Object obj) {
 
     if (pt == NULL)
@@ -286,6 +336,11 @@ void expDestroyBlock (Tree * pt, Tree * adr, Object obj) {
 
 }
 
+
+/* Operation: Search for a node, which need connect in destroy    */
+/* place.                                                         */
+/* Predconditions: This function gets pointer of tree.            */
+/* Postconditions: destroy node.                                  */
 void whichNode (Tree * pt) {
 
     /*------------/------
@@ -335,6 +390,11 @@ void whichNode (Tree * pt) {
 
 }
 
+
+/* Operation: Attaches the node.                                  */
+/* Predconditions: This function gets pointer of tree and         */
+/* previously saved right node.                                   */
+/* Postconditions: the right branch will be attached              */
 void Right (Tree * pt, Tree * save) {
 
   if (pt->right == NULL) {
