@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <windows.h>
 
 #define LEN 50
 
@@ -34,6 +35,16 @@ void Right (Tree * pt, Tree * save);
 
 
 int main (void) {
+
+    /* ##### rus-location ###*/
+
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+    /*#########################*/
+
+
+
 
     Object item;
     Tree temp;
@@ -333,7 +344,8 @@ void Right (Tree * pt, Tree * save) {
 
   }
 
-  Right (pt->right, save);
+  printf ("It was destroy block with adress: %p\n", pt);
 
+  Right (pt->right, save);
 
 }
