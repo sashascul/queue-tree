@@ -24,8 +24,8 @@ typedef struct tree {
 void InitializateTree (Tree * pt, Object obj);
 void AddItem (Tree * pt, Object obj);
 void expAdd (Tree * save, Tree * memTree);
-short ExploreNode (Tree * pt, char book[], Tree ** save);
-void Explore (Tree * pt, char book[]);
+bool ExploreNode (Tree * pt, Object book, Tree ** save);
+void Explore (Tree * pt, Object book);
 void DestroyNode (Tree * pt, char book[]);
 void Destroy (Tree * pt, Object obj);
 void expDestroyBlock (Tree * pt, Tree * adr, Object obj);
@@ -88,17 +88,17 @@ int main (void) {
 
     }
 
-    label:
 
-    /*
 
-    char book[LEN];
+    Object book;
     puts ("Explore of block. Input title any book:");
-    gets (book);
+    gets (book.title);
+    gets (book.author);
 
     Explore (&temp, book);
 
-    */
+
+    label:
 
     Object object;
     puts ("Input title of book, which needing destroy:");
@@ -107,8 +107,6 @@ int main (void) {
     gets (object.author);
 
     Destroy (&temp, object);
-
-
 
     return 0;
 
@@ -176,7 +174,7 @@ void expAdd (Tree * save, Tree * memTree) {
 
 }
 
-void Explore (Tree * pt, char book[]) {
+void Explore (Tree * pt, Object book) {
 
     Tree * mem;
     mem = (Tree * ) malloc (sizeof (Tree));
@@ -184,46 +182,43 @@ void Explore (Tree * pt, char book[]) {
 
     Tree * str;
 
-    short result = ExploreNode (mem, book, &str);
+    bool result = ExploreNode (mem, book, &str);
 
     switch (result) {
 
-        case 0:
-            puts ("This tree don't contain this book!");
-            break;
-        case 1:
+        case true:
             puts ("This tree contain this book. Adress this block: ");
             printf ("%p", str);
+            break;
         default:
+            puts ("This tree don't contain this book!");
             break;
 
     }
 
 }
 
-short ExploreNode (Tree * pt, char book[], Tree ** save) {
+bool ExploreNode (Tree * pt, Object book, Tree ** save) {
 
-    if (pt == NULL)
-        return 0;
+	if (pt == NULL)
+		return false;
 
-    if (strcmp ((pt->object).title, book) == 0) {
+    if (strcmp (book.title, (pt->object).title) == 0) {
 
         * save = pt;
-        return 1;
+        return true;
 
     }
 
-    if (strcmp (book, (pt->object).title) < 0) {
+    if (strcmp (book.title, (pt->object).title) < 0) {
 
-        pt = pt->left;
-        ExploreNode (pt, book, save);
+        ExploreNode (pt->left, book, save);
 
     }
 
-    if (strcmp (book, (pt->object).title) > 0) {
+    if (strcmp (book.title, (pt->object).title) > 0) {
 
-        pt = pt->right;
-        ExploreNode (pt, book, save);
+        ExploreNode (pt->right, book, save);
 
     }
 
@@ -237,9 +232,9 @@ void Destroy (Tree * pt, Object obj) {
     node get adress of destroying block
     ####################################*/
 
-    if (ExploreNode (pt, obj.title, &adr) == 1) {
+    if (ExploreNode (pt, obj, &adr) == 1) {
 
-        puts ("This node'll destroy.");
+        puts ("This node'll destroy. Info:");
         expDestroyBlock (pt, adr, obj);
         return;
 
@@ -260,6 +255,11 @@ void expDestroyBlock (Tree * pt, Tree * adr, Object obj) {
         return;
 
     if (pt == adr) {
+
+        printf ("title: ");
+        puts ((pt->object).title);
+        printf ("author: ");
+        puts ((pt->object).author);
 
         whichNode (pt);
         return;
@@ -284,7 +284,10 @@ void whichNode (Tree * pt) {
 
     if (pt->right == NULL) {
 
+        printf ("Object-title of left branch: ");
+        puts (((pt->left)->object).title);
         pt = pt->left;
+
         return;
 
     }
@@ -296,8 +299,11 @@ void whichNode (Tree * pt) {
 
     if (pt->left == NULL) {
 
-        pt = pt->right;
-        return;
+      printf ("Object-title of right branch: ");
+      puts (((pt->right)->object).title);
+      pt = pt->right;
+
+      return;
 
     }
 
@@ -308,6 +314,8 @@ void whichNode (Tree * pt) {
 
     else {
 
+        printf ("Object-title of left branch: ");
+        puts (((pt->left)->object).title);
         Tree * save = pt->right;
         Right (pt->left, save);
         return;
