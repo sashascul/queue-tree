@@ -20,6 +20,7 @@ typedef struct {
 
 typedef struct tree {
 
+    int size;
     Object object;
     struct tree * left;
     struct tree * right;
@@ -29,7 +30,7 @@ typedef struct tree {
 
 void InitializateTree (Tree * pt, Object obj);
 void AddItem (Tree * pt, Object obj);
-void expAdd (Tree * save, Tree * memTree);
+void expAdd (Tree * save, Tree * memTree, Tree * pt);
 bool ExploreNode (Tree * pt, Object book, Tree ** save);
 void Explore (Tree * pt, Object book);
 void DestroyNode (Tree * pt, char book[]);
@@ -42,7 +43,9 @@ char menu (void);
 void InputAddItem (Tree * temp);
 void InputDestroyItem (Tree * temp);
 void InputSeekItem (Tree * temp);
-void Exit (void);
+void Ignore (void);
+void BeforeInitialize (Tree * pt);
+bool Empty (Tree * pt);
 
 
 int main (void) {
@@ -54,8 +57,9 @@ int main (void) {
                                ///
     /*##########################*/
 
-    Tree temp;
     char ch;
+    Tree temp;
+    BeforeInitialize (&temp);
 
     while ((ch = menu ()) != 'q') {
 
@@ -67,7 +71,7 @@ int main (void) {
                   break;
         case 's': InputSeekItem (&temp);
                   break;
-        case 'q': Exit ();
+        case '0': Ignore ();
                   break;
 
         default: break;
@@ -116,12 +120,12 @@ int main (void) {
 }
 
 
-/* Operation: Function for exit.                                  */
+/* Operation: Function for ignore.                                */
 /* Predconditions: -                                              */
-/* Postconditions: exit from this program.                        */
-void Exit (void) {
+/* Postconditions: switch           ignore.                       */
+void Ignore (void) {
 
-  exit (EXIT_SUCCESS);
+    return;
 
 }
 
@@ -130,6 +134,13 @@ void Exit (void) {
 /* Predconditions: This function gets pointer of tree.            */
 /* Postconditions: To Explore ().                                 */
 void InputSeekItem (Tree * temp) {
+
+    if (Empty (temp) == true) {
+
+      puts ("Tree is empty.");
+      return;
+
+    }
 
     Object book;
     puts ("Explore of block. Input title any book:");
@@ -184,6 +195,13 @@ void InputAddItem (Tree * temp) {
 /* Postconditions: To Destroy ().                                 */
 void InputDestroyItem (Tree * temp) {
 
+    if (Empty (temp) == true) {
+
+      puts ("Tree is empty.");
+      return;
+
+    }
+
     Object object;
     puts ("Input title of book, which needing destroy:");
     input (object.title);
@@ -207,6 +225,7 @@ void InitializateTree (Tree * pt, Object obj) {
     pt->object = obj;
     pt->left = NULL;
     pt->right = NULL;
+    pt->size++;
 
 }
 
@@ -230,7 +249,7 @@ void AddItem (Tree * pt, Object obj) {
     memTree->right = NULL;
     save = pt;
 
-    expAdd (save, memTree);
+    expAdd (save, memTree, pt);
 
 }
 
@@ -240,13 +259,14 @@ void AddItem (Tree * pt, Object obj) {
 /* pointer for previously allocated memory.                       */
 /* Postconditions: there is a comparison of elements by branches. */
 /* Adding element adds in the end of tree.                        */
-void expAdd (Tree * save, Tree * memTree) {
+void expAdd (Tree * save, Tree * memTree, Tree * pt) {
 
     if (strcmp ((memTree->object).title, (save->object).title) < 0) {
 
         if (save->left == NULL) {
 
             save->left = memTree;
+            pt->size++;
             return;
 
         }
@@ -254,7 +274,7 @@ void expAdd (Tree * save, Tree * memTree) {
         else {
 
             save = save->left;
-            expAdd (save, memTree);
+            expAdd (save, memTree, pt);
 
         }
 
@@ -265,6 +285,7 @@ void expAdd (Tree * save, Tree * memTree) {
         if (save->right == NULL) {
 
             save->right = memTree;
+            pt->size++;
             return;
 
         }
@@ -272,7 +293,7 @@ void expAdd (Tree * save, Tree * memTree) {
         else {
 
             save = save->right;
-            expAdd (save, memTree);
+            expAdd (save, memTree, pt);
 
         }
 
@@ -280,7 +301,7 @@ void expAdd (Tree * save, Tree * memTree) {
 
     else {
 
-      puts ("Entered the same title."
+      puts ("Entered the same title. "
             "You can't do it this way!");
 
       return;
@@ -366,12 +387,6 @@ void Destroy (Tree * pt, Object obj) {
     node get adress of destroying block
     ####################################*/
 
-    if (pt == NULL) {
-
-        puts ("No data entered!");
-        return;
-
-    }
 
     if (ExploreNode (pt, obj, &adr) == 1) {
 
@@ -410,6 +425,7 @@ void expDestroyBlock (Tree * pt, Tree * adr, Object obj) {
         puts ((pt->object).author);
 
         whichNode (pt);
+        pt->size--;
         return;
 
     }
@@ -525,7 +541,7 @@ char * input (char * str) {
 
 char menu () {
 
-    char ch;
+  char ch, ch1;
 
   puts (FRAME);
   puts ("                  MENU:                  ");
@@ -534,20 +550,34 @@ char menu () {
   puts ("d) Destroy node;             q) Exit.     ");
   putchar ('\n');
   puts (FRAME);
-
   puts ("Please, input one of the variant menu:");
+
 
   ch = getchar ();
   while (getchar () != '\n')
-    continue;
+  	continue;
 
   if (strchr ("asdq", ch) == NULL) {
 
     puts ("This paragraph not found! Repeat again.");
-    menu ();
+    return '0';
 
   }
 
   return ch;
+
+}
+
+void BeforeInitialize (Tree * pt) {
+
+  pt->size = 0;
+  pt->left = NULL;
+  pt->right = NULL;
+
+}
+
+bool Empty (Tree * pt) {
+
+  return (pt->size == 0) ? true : false;
 
 }
