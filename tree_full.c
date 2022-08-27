@@ -531,7 +531,7 @@ char menu () {
   puts ("                  MENU:                  ");
   putchar ('\n');
   puts ("a) Add items;                s) Seek item;");
-  puts ("d) Destroy node;            q) Exit.     ");
+  puts ("d) Destroy node;             q) Exit.     ");
   putchar ('\n');
   puts (FRAME);
 
