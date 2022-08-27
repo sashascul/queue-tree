@@ -4,7 +4,11 @@
 #include <stdbool.h>
 #include <windows.h>
 
+#define FRAME "##########################################"
 #define LEN 50
+
+
+bool initializeFirst = 0;
 
 typedef struct {
 
@@ -32,6 +36,12 @@ void Destroy (Tree * pt, Object obj);
 void expDestroyBlock (Tree * pt, Tree * adr, Object obj);
 void whichNode (Tree * pt);
 void Right (Tree * pt, Tree * save);
+char * input (char * str);
+char menu (void);
+void InputAddItem (Tree * temp);
+void InputDestroyItem (Tree * temp);
+void InputSeekItem (Tree * temp);
+void Exit (void);
 
 
 int main (void) {
@@ -43,30 +53,25 @@ int main (void) {
                                ///
     /*##########################*/
 
-
-
-
-    Object item;
     Tree temp;
+    char ch;
 
-    puts ("Input title of book:");
-    gets (item.title);
-    puts ("Input author this book:");
-    gets (item.author);
+    while ((ch = menu ()) != 'q') {
 
-    InitializateTree (&temp, item);
+      switch (ch) {
 
-    puts ("Input title next book:");
+        case 'a': InputAddItem (&temp);
+        case 'd': InputDestroyItem (&temp);
+        case 's': InputSeekItem (&temp);
+        case 'q': Exit ();
 
-    while (gets (item.title) != NULL && item.title[0] != '\0') {
+        default: break;
 
-        puts ("Input author this book:");
-        gets (item.author);
-        AddItem (&temp, item);
-
-        puts ("Input title next book:");
+      }
 
     }
+
+    puts ("Program finished. Good luck!");
 
 
     goto label;
@@ -99,27 +104,84 @@ int main (void) {
 
     }
 
+    label:
 
+    return 0;
+
+}
+
+
+/* Operation: Function for exit.                                  */
+/* Predconditions: -                                              */
+/* Postconditions: exit from this program.                        */
+void Exit (void) {
+
+  exit (EXIT_SUCCESS);
+
+}
+
+
+/* Operation: Function for subsequent destroy.                    */
+/* Predconditions: This function gets pointer of tree.            */
+/* Postconditions: To Explore ().                                 */
+void InputSeekItem (Tree * temp) {
 
     Object book;
     puts ("Explore of block. Input title any book:");
     gets (book.title);
     gets (book.author);
 
-    Explore (&temp, book);
+    Explore (temp, book);
+
+}
 
 
-    label:
+/* Operation: Function for subsequent input.                      */
+/* Predconditions: This function gets pointer of tree.            */
+/* Postconditions: To AddItem ().                                 */
+void InputAddItem (Tree * temp) {
+
+  Object item;
+
+  if (initializeFirst == 0) {
+
+    puts ("Input title of book:");
+    input (item.title);
+    puts ("Input author this book:");
+    input (item.author);
+
+    InitializateTree (temp, item);
+    initializeFirst = 1;
+
+  }
+
+  puts ("Input title of book:");
+
+  while (input (item.title) != NULL && item.title[0] != '\0') {
+
+      puts ("Input author this book:");
+      input (item.author);
+      AddItem (temp, item);
+
+      puts ("Input title next book or input [enter]:");
+
+  }
+
+}
+
+
+/* Operation: Function for subsequent destroy.                    */
+/* Predconditions: This function gets pointer of tree.            */
+/* Postconditions: To Destroy ().                                 */
+void InputDestroyItem (Tree * temp) {
 
     Object object;
     puts ("Input title of book, which needing destroy:");
-    gets (object.title);
+    input (object.title);
     puts ("Input author this book, which needing destroy:");
-    gets (object.author);
+    input (object.author);
 
-    Destroy (&temp, object);
-
-    return 0;
+    Destroy (temp, object);
 
 }
 
@@ -407,5 +469,60 @@ void Right (Tree * pt, Tree * save) {
   printf ("It was destroy block with adress: %p\n", pt);
 
   Right (pt->right, save);
+
+}
+
+
+/* Operation: This function fills the string.                     */
+/* Predconditions: This function gets pointer of string.          */
+/* Postconditions: This function return pointer of this string    */
+char * input (char * str) {
+
+  char ch;
+
+  while ((ch = getchar()) != EOF) {
+
+    if (ch == '\n') {
+
+      ch = '\0';
+      * str = ch;
+
+      return str;
+
+    }
+
+    * str = ch;
+    str++;
+
+  }
+
+}
+
+char menu () {
+
+    char ch;
+
+  puts (FRAME);
+  puts ("                  MENU:                  ");
+  putchar ('\n');
+  puts ("a) Add items;                s) Seek item;");
+  puts ("d) Destroy node;            q) Exit.     ");
+  putchar ('\n');
+  puts (FRAME);
+
+  puts ("Please, input one of the variant menu:");
+
+  ch = getchar ();
+  while (getchar () != '\n')
+    continue;
+
+  if (strchr ("asdq", ch) == NULL) {
+
+    puts ("This paragraph not found! Repeat again.");
+    menu ();
+
+  }
+
+  return ch;
 
 }
