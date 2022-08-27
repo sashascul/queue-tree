@@ -10,6 +10,7 @@
 
 bool initializeFirst = 0;
 
+
 typedef struct {
 
     char title[LEN];
@@ -61,9 +62,13 @@ int main (void) {
       switch (ch) {
 
         case 'a': InputAddItem (&temp);
+                  break;
         case 'd': InputDestroyItem (&temp);
+                  break;
         case 's': InputSeekItem (&temp);
+                  break;
         case 'q': Exit ();
+                  break;
 
         default: break;
 
@@ -145,8 +150,12 @@ void InputAddItem (Tree * temp) {
 
   if (initializeFirst == 0) {
 
-    puts ("Input title of book:");
+    puts ("Input title of book or input [enter] to exit:");
     input (item.title);
+
+    if (item.title[0] == '\0')
+      return;
+
     puts ("Input author this book:");
     input (item.author);
 
@@ -163,7 +172,7 @@ void InputAddItem (Tree * temp) {
       input (item.author);
       AddItem (temp, item);
 
-      puts ("Input title next book or input [enter]:");
+      puts ("Input title next book or input [enter] to exit:");
 
   }
 
@@ -269,6 +278,15 @@ void expAdd (Tree * save, Tree * memTree) {
 
     }
 
+    else {
+
+      puts ("Entered the same title."
+            "You can't do it this way!");
+
+      return;
+
+    }
+
 }
 
 
@@ -348,6 +366,13 @@ void Destroy (Tree * pt, Object obj) {
     node get adress of destroying block
     ####################################*/
 
+    if (pt == NULL) {
+
+        puts ("No data entered!");
+        return;
+
+    }
+
     if (ExploreNode (pt, obj, &adr) == 1) {
 
         puts ("This node'll destroy. Info:");
@@ -359,7 +384,7 @@ void Destroy (Tree * pt, Object obj) {
     else {
 
         puts ("So node not found!");
-        exit (EXIT_FAILURE);
+        return;
 
     }
 
