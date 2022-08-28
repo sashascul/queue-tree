@@ -30,12 +30,10 @@ typedef struct tree {
 
 void InitializateTree (Tree * pt, Object obj);
 void AddItem (Tree * pt, Object obj);
-void expAdd (Tree * save, Tree * memTree, Tree * pt);
+void expAdd (Tree * memTree, Tree * pt);
 bool ExploreNode (Tree * pt, Object book, Tree ** save);
 void Explore (Tree * pt, Object book);
-void DestroyNode (Tree * pt, char book[]);
 void Destroy (Tree * pt, Object obj);
-void expDestroyBlock (Tree * pt, Tree * adr, Object obj);
 void whichNode (Tree * pt);
 void Right (Tree * pt, Tree * save);
 char * input (char * str);
@@ -46,6 +44,8 @@ void InputSeekItem (Tree * temp);
 void Ignore (void);
 void BeforeInitialize (Tree * pt);
 bool Empty (Tree * pt);
+void expDestroy (Tree * pt, Tree * adr);
+void fullDestruction (Tree * pt, Tree * adr);
 
 
 int main (void) {
@@ -145,7 +145,6 @@ void InputSeekItem (Tree * temp) {
     Object book;
     puts ("Explore of block. Input title any book:");
     gets (book.title);
-    gets (book.author);
 
     Explore (temp, book);
 
@@ -205,9 +204,6 @@ void InputDestroyItem (Tree * temp) {
     Object object;
     puts ("Input title of book, which needing destroy:");
     input (object.title);
-    puts ("Input author this book, which needing destroy:");
-    input (object.author);
-
     Destroy (temp, object);
 
 }
@@ -241,15 +237,14 @@ void InitializateTree (Tree * pt, Object obj) {
 /* Further The function "expAdd" start to work.                   */
 void AddItem (Tree * pt, Object obj) {
 
-    Tree * memTree, * save;
+    Tree * memTree;
     memTree = (Tree * ) malloc (sizeof (Tree));
 
     memTree->object = obj;
     memTree->left = NULL;
     memTree->right = NULL;
-    save = pt;
 
-    expAdd (save, memTree, pt);
+    expAdd (memTree, pt);
 
 }
 
@@ -259,52 +254,42 @@ void AddItem (Tree * pt, Object obj) {
 /* pointer for previously allocated memory.                       */
 /* Postconditions: there is a comparison of elements by branches. */
 /* Adding element adds in the end of tree.                        */
-void expAdd (Tree * save, Tree * memTree, Tree * pt) {
+void expAdd (Tree * memTree, Tree * pt) {
 
-    if (strcmp ((memTree->object).title, (save->object).title) < 0) {
+    if (strcmp ((memTree->object).title, (pt->object).title) < 0) {
 
-        if (save->left == NULL) {
+        if (pt->left == NULL) {
 
-            save->left = memTree;
-            pt->size++;
+            pt->left = memTree;
             return;
 
         }
 
-        else {
-
-            save = save->left;
-            expAdd (save, memTree, pt);
-
-        }
+        else
+            expAdd (memTree, pt->left);
 
     }
 
-    if (strcmp ((memTree->object).title, (save->object).title) > 0) {
+    if (strcmp ((memTree->object).title, (pt->object).title) > 0) {
 
-        if (save->right == NULL) {
+        if (pt->right == NULL) {
 
-            save->right = memTree;
-            pt->size++;
+            pt->right = memTree;
             return;
 
         }
 
-        else {
-
-            save = save->right;
-            expAdd (save, memTree, pt);
-
-        }
+        else
+            expAdd (memTree, pt->right);
 
     }
 
     else {
 
-      puts ("Entered the same title. "
+        puts ("Entered the same title. "
             "You can't do it this way!");
 
-      return;
+        return;
 
     }
 
@@ -328,17 +313,15 @@ void Explore (Tree * pt, Object book) {
 
     bool result = ExploreNode (mem, book, &str);
 
-    switch (result) {
+    if (result == true) {
 
-        case true:
-            puts ("This tree contain this book. Adress this block: ");
-            printf ("%p", str);
-            break;
-        default:
-            puts ("This tree don't contain this book!");
-            break;
+        puts ("This tree contain this book. Adress this block: ");
+        printf ("%p\n", str);
 
     }
+
+    else
+        puts ("This tree don't contain this book!");
 
 }
 
@@ -350,8 +333,8 @@ void Explore (Tree * pt, Object book) {
 /* Postconditions: this function looks for an element.            */
 bool ExploreNode (Tree * pt, Object book, Tree ** save) {
 
-	if (pt == NULL)
-		return false;
+	  if (pt == NULL)
+		    return false;
 
     if (strcmp (book.title, (pt->object).title) == 0) {
 
@@ -360,17 +343,11 @@ bool ExploreNode (Tree * pt, Object book, Tree ** save) {
 
     }
 
-    if (strcmp (book.title, (pt->object).title) < 0) {
-
+    if (strcmp (book.title, (pt->object).title) < 0)
         ExploreNode (pt->left, book, save);
 
-    }
-
-    if (strcmp (book.title, (pt->object).title) > 0) {
-
+    if (strcmp (book.title, (pt->object).title) > 0)
         ExploreNode (pt->right, book, save);
-
-    }
 
 }
 
@@ -390,8 +367,15 @@ void Destroy (Tree * pt, Object obj) {
 
     if (ExploreNode (pt, obj, &adr) == 1) {
 
+        printf ("Adress block: %p\n", adr);
+        printf ("Title this adress block:");
+        puts ((adr->object).title);
+        printf ("Author this adress block:");
+        puts ((adr->object).author);
         puts ("This node'll destroy. Info:");
-        expDestroyBlock (pt, adr, obj);
+
+        expDestroy (pt, adr);
+
         return;
 
     }
@@ -399,6 +383,7 @@ void Destroy (Tree * pt, Object obj) {
     else {
 
         puts ("So node not found!");
+
         return;
 
     }
@@ -406,110 +391,49 @@ void Destroy (Tree * pt, Object obj) {
 }
 
 
-
-/* Operation: Search for a node, which need destroying.           */
-/* Predconditions: This function gets pointer of tree,            */
-/* pointer of saved adress block and compared object.             */
-/* Postconditions: searches for the specified block to delete     */
-/* later                                                          */
-void expDestroyBlock (Tree * pt, Tree * adr, Object obj) {
-
-    if (pt == NULL)
-        return;
+void expDestroy (Tree * pt, Tree * adr) {
 
     if (pt == adr) {
 
-        printf ("title: ");
-        puts ((pt->object).title);
-        printf ("author: ");
-        puts ((pt->object).author);
+        puts ("This block for destroying founded.");
+        fullDestruction (pt, adr);
 
-        whichNode (pt);
-        pt->size--;
         return;
 
     }
 
-    if (strcmp (obj.title, (pt->object).title) < 0)
-        expDestroyBlock (pt->left, adr, obj);
+    if (strcmp ((adr->object).title, (pt->object).title) < 0)
+        expDestroy (pt->left, adr);
 
-    if (strcmp (obj.title, (pt->object).title) > 0)
-        expDestroyBlock (pt->right, adr, obj);
-
+    if (strcmp ((adr->object).title, (pt->object).title) > 0)
+        expDestroy (pt->right, adr);
 
 }
 
 
-/* Operation: Search for a node, which need connect in destroy    */
-/* place.                                                         */
-/* Predconditions: This function gets pointer of tree.            */
-/* Postconditions: destroy node.                                  */
-void whichNode (Tree * pt) {
+void fullDestruction (Tree * pt, Tree * adr) {
 
-    /*------------/------
-      -------node1-------
-      --node2-----NULL---
-      -------------------*/
-
-    if (pt->right == NULL) {
-
-        printf ("Object-title of left branch: ");
-        puts (((pt->left)->object).title);
-        pt = pt->left;
-
-        return;
-
-    }
-
-    /*----------/--------
-      -------node1-------
-      --NULL-----node2---
-      -------------------*/
+    Tree * save;
 
     if (pt->left == NULL) {
 
-      printf ("Object-title of right branch: ");
-      puts (((pt->right)->object).title);
-      pt = pt->right;
+        save = pt;
+        pt = pt->right;
+        free (pt);
 
-      return;
-
-    }
-
-    /*----------/--------
-      -------node1-------
-      --node2-----node3--
-      -------------------*/
-
-    else {
-
-        printf ("Object-title of left branch: ");
-        puts (((pt->left)->object).title);
-        Tree * save = pt->right;
-        Right (pt->left, save);
         return;
 
     }
 
-}
+    if (pt->right == NULL) {
 
+        save = pt;
+        pt = pt->left;
+        free (pt);
 
-/* Operation: Attaches the node.                                  */
-/* Predconditions: This function gets pointer of tree and         */
-/* previously saved right node.                                   */
-/* Postconditions: the right branch will be attached              */
-void Right (Tree * pt, Tree * save) {
+        return;
 
-  if (pt->right == NULL) {
-
-      pt->right = save;
-      return;
-
-  }
-
-  printf ("It was destroy block with adress: %p\n", pt);
-
-  Right (pt->right, save);
+    }
 
 }
 
@@ -541,7 +465,7 @@ char * input (char * str) {
 
 char menu () {
 
-  char ch, ch1;
+  char ch;
 
   puts (FRAME);
   puts ("                  MENU:                  ");
