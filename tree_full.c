@@ -46,6 +46,8 @@ void destroyItem (Tree * pt);
 void destruction (Node ** ptr, Object save);
 void fullDestruction (Node ** ptr);
 void addRight (Node ** Right, Node ** Left);
+void fullItems (Tree * pt);
+void fullExplore (Node ** pt);
 
 
 int main (void) {
@@ -58,7 +60,7 @@ int main (void) {
     /*##########################*/
 
     Tree tree;
-    
+
     InitializeTree (&tree);
     
     char ch;
@@ -76,6 +78,9 @@ int main (void) {
     				  
     		case 'd': pr = destroyItem;
     				  break;
+    		
+    		case 'f': pr = fullItems;
+    				  break;
     				  
     		default:  pr = Ignore;
 					  break;
@@ -84,15 +89,38 @@ int main (void) {
     	
     	( * pr) (&tree);
     	
-    	printf ("Root adress: %p\n", tree.temp);
-    	printf ("left-branch adress: %p\n", (tree.temp)->left);
-    	printf ("right-branch adress: %p\n", (tree.temp)->right);
+    	//printf ("Root adress: %p\n", tree.temp);
+    	//printf ("left-branch adress: %p\n", (tree.temp)->left);
+    //	printf ("right-branch adress: %p\n", (tree.temp)->right);
     	
     	
     }
     
     
+    
 	return 0;
+	
+}
+
+
+void fullItems (Tree * pt) {
+	
+	if (pt->size == 0) {
+		
+		puts ("Tree don't contain objects.");
+		
+		return;
+		
+	}
+	
+	fullExplore (&(pt->temp));
+	
+}
+
+
+void fullExplore (Node ** pt) {
+	
+	
 	
 }
 
@@ -352,6 +380,7 @@ char menu (Tree * pt) {
 	puts ("                  MENU:                  ");
 	putchar ('\n');
 	puts ("a) Add items;                s) Seek item;");
+	puts ("f) Check full list;                       ");
 	puts ("d) Destroy node;             q) Exit.     ");
 	putchar ('\n');
 	puts (FRAME);
@@ -390,5 +419,3 @@ char * input (char * str) {
   }
 
 }
-
-
