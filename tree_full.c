@@ -239,7 +239,7 @@ bool expTitleBlock (Node * expBlock, Object objExp, Node ** save) {
 	if (strcmp (objExp.title, (expBlock->object).title) < 0)
 		expTitleBlock (expBlock->left, objExp, save);
 	
-	if (strcmp (objExp.title, (expBlock->object).title) > 0)
+	else if (strcmp (objExp.title, (expBlock->object).title) > 0)
 		expTitleBlock (expBlock->right, objExp, save);
 	
 	
@@ -391,3 +391,9 @@ char * input (char * str) {
   }
 
 }
+
+
+
+
+
+
