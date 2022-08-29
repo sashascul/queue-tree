@@ -43,6 +43,8 @@ void expItem (Tree * pt);
 bool expTitleBlock (Node * expBlock, Object objExp, Node ** save);
 bool Empty (Tree * pt);
 void destroyItem (Tree * pt);
+void destruction (Node ** ptr, Object save);
+void fullDestruction (Node ** ptr);
 
 
 int main (void) {
@@ -81,9 +83,11 @@ int main (void) {
     	
     	( * pr) (&tree);
     	
+    	printf ("Root adress: %p\n", tree.temp);
+    	printf ("left-branch adress: %p\n", (tree.temp)->left);
+    	
     	
     }
-    
     
     
 	return 0;
@@ -111,6 +115,9 @@ void destroyItem (Tree * pt) {
 		
 		puts ("This block'll destroy.");
 		
+		destruction (&(pt->temp), objDest);
+		pt->size--;
+		
 		return;
 		
 	}
@@ -120,6 +127,66 @@ void destroyItem (Tree * pt) {
 		
 	
 }
+
+
+void destruction (Node ** ptr, Object save) {
+		
+	if (strcmp (save.title, (( * ptr)->object).title) < 0)
+		destruction (&(( * ptr)->left), save);
+	
+	else if (strcmp (save.title, (( * ptr)->object).title) > 0)
+		destruction (&(( * ptr)->right), save);
+	
+	else {
+		
+		if (( * ptr)->right == NULL) {
+		
+			Node * z;
+			z =  * ptr;
+			(*ptr) = (*ptr)->left;
+			free (z);
+		
+		}
+	
+		else if (( * ptr)->right == NULL) {
+		
+			Node * z;
+			z =  * ptr;
+			(*ptr) = (*ptr)->left;
+			free (z);
+		
+		}
+		
+		else
+			exit (228);
+		
+	}
+	
+}
+
+
+void fullDestruction (Node ** ptr) {
+	
+	Node * z;
+	
+	if (( * ptr)->right == NULL) {
+		
+		z =  * ptr;
+		(*ptr) = (*ptr)->left;
+		free (z);
+		
+	}
+	
+	else if (( * ptr)->left == NULL) {
+		
+		z =  * ptr;
+		(*ptr) = (*ptr)->right;
+		free (z);
+		
+	}
+	
+	
+} 
 
 
 void expItem (Tree * pt) {
@@ -145,14 +212,16 @@ void expItem (Tree * pt) {
 		puts ("So block was found.");
 		printf ("Adress of founded block: %p\n", save);
 		
-		return;
-		
 	}
 	
 	else
 		puts ("So block wasn't found");
+		
+	
 	
 }
+
+
 
 
 bool expTitleBlock (Node * expBlock, Object objExp, Node ** save) {
@@ -167,10 +236,10 @@ bool expTitleBlock (Node * expBlock, Object objExp, Node ** save) {
 		
 	}
 	
-	else if (strcmp (objExp.title, (expBlock->object).title) < 0)
+	if (strcmp (objExp.title, (expBlock->object).title) < 0)
 		expTitleBlock (expBlock->left, objExp, save);
 	
-	else if (strcmp (objExp.title, (expBlock->object).title) > 0)
+	if (strcmp (objExp.title, (expBlock->object).title) > 0)
 		expTitleBlock (expBlock->right, objExp, save);
 	
 	
@@ -241,7 +310,7 @@ bool expAddItem (Node * pt, Node * mem) {
 		
 	}
 	
-	if (strcmp ((mem->object).title, (pt->object).title) > 0) {
+	else if (strcmp ((mem->object).title, (pt->object).title) > 0) {
 		
 		if (pt->right == NULL) {
 			
@@ -322,4 +391,3 @@ char * input (char * str) {
   }
 
 }
-
