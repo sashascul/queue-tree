@@ -45,6 +45,7 @@ bool Empty (Tree * pt);
 void destroyItem (Tree * pt);
 void destruction (Node ** ptr, Object save);
 void fullDestruction (Node ** ptr);
+void addRight (Node ** Right, Node ** Left);
 
 
 int main (void) {
@@ -85,6 +86,7 @@ int main (void) {
     	
     	printf ("Root adress: %p\n", tree.temp);
     	printf ("left-branch adress: %p\n", (tree.temp)->left);
+    	printf ("right-branch adress: %p\n", (tree.temp)->right);
     	
     	
     }
@@ -139,11 +141,11 @@ void destruction (Node ** ptr, Object save) {
 	
 	else {
 		
-		if (( * ptr)->right == NULL) {
+		if (( * ptr)->left == NULL) {
 		
 			Node * z;
 			z =  * ptr;
-			(*ptr) = (*ptr)->left;
+			(*ptr) = (*ptr)->right;
 			free (z);
 		
 		}
@@ -157,37 +159,34 @@ void destruction (Node ** ptr, Object save) {
 		
 		}
 		
-		else
-			exit (228);
+		else {
+			
+			Node * z;
+			z = * ptr;
+			addRight (&( * ptr)->right, &( * ptr)->left);
+			( * ptr) = ( * ptr)->left;
+			free (z);
+			
+		}
 		
 	}
 	
 }
 
 
-void fullDestruction (Node ** ptr) {
+void addRight (Node ** Right, Node ** Left) {
 	
-	Node * z;
-	
-	if (( * ptr)->right == NULL) {
+	if ( ( * Left)->right == NULL)  {
 		
-		z =  * ptr;
-		(*ptr) = (*ptr)->left;
-		free (z);
+		( * Left)->right = * Right;
+		
+		return;
 		
 	}
 	
-	else if (( * ptr)->left == NULL) {
-		
-		z =  * ptr;
-		(*ptr) = (*ptr)->right;
-		free (z);
-		
-	}
+	addRight (Right, & ( * Left)->right);
 	
-	
-} 
-
+}
 
 void expItem (Tree * pt) {
 	
@@ -391,9 +390,5 @@ char * input (char * str) {
   }
 
 }
-
-
-
-
 
 
