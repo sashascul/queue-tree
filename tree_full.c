@@ -26,10 +26,10 @@ typedef struct node {
 
 
 typedef struct {
-	
+
 	Node * temp;
 	int size;
-	
+
 } Tree;
 
 
@@ -62,313 +62,335 @@ int main (void) {
     Tree tree;
 
     InitializeTree (&tree);
-    
+
     char ch;
     void ( * pr) (Tree * );
-    
+
     while ((ch = menu (&tree)) != 'q') {
-    	
+
     	switch (ch) {
-    		
+
     		case 'a': pr = AddItem;
-    				  break;
-    		
+    				      break;
+
     		case 's': pr = expItem;
-    				  break;
-    				  
+    				      break;
+
     		case 'd': pr = destroyItem;
-    				  break;
-    		
-    		case 'f': pr = fullItems;
-    				  break;
-    				  
+    				      break;
+
+    		case 'c': pr = fullItems;
+    				      break;
+
     		default:  pr = Ignore;
-					  break;
-    		
+					        break;
+
     	}
-    	
+
     	( * pr) (&tree);
-    	
-    	//printf ("Root adress: %p\n", tree.temp);
-    	//printf ("left-branch adress: %p\n", (tree.temp)->left);
-    //	printf ("right-branch adress: %p\n", (tree.temp)->right);
-    	
-    	
+
+    	printf ("Root adress: %p\n", tree.temp);
+
+      label:
+
+      printf ("left-branch adress: %p\n", (tree.temp)->left);
+      printf ("right-branch adress: %p\n", (tree.temp)->right);
+
+      goto label;
+
     }
-    
-    
-    
+
 	return 0;
-	
+
 }
 
 
-void fullItems (Tree * pt) {
-	
-	if (pt->size == 0) {
-		
-		puts ("Tree don't contain objects.");
-		
-		return;
-		
-	}
-	
-	fullExplore (&(pt->temp));
-	
+void fullItems (Tree * mem) {
+
+    Node * z;
+    z = mem->temp;
+
+    if (mem->size == 0) {
+
+        puts ("Tree don't contain objects.");
+
+        return;
+
+     }
+
+    while (z != NULL)
+	     fullExplore (&z);
+
 }
 
 
-void fullExplore (Node ** pt) {
-	
-	
-	
+void fullExplore (Node ** mem) {
+
+    if (( * mem)->left == NULL && ( * mem)->right == NULL) {
+
+        printf ("Title of book: ");
+        puts ((( * mem)->object).title);
+        printf ("Author this book: ");
+        puts ((( * mem)->object).author);
+        putchar ('\n');
+        (* mem) = NULL;
+
+        return;
+
+    }
+
+    if (( * mem)->left != NULL)
+        fullExplore (&(( * mem)->left));
+
+    fullExplore (&(( * mem)->right));
+
 }
 
 
 void destroyItem (Tree * pt) {
-	
+
 	if (Empty (pt) == true) {
-		
+
 		puts ("Tree is empty");
 		return;
-		
+
 	}
-	
+
 	Object objDest;
-	
+
 	puts ("Input title of destroying block:");
 	input (objDest.title);
-	
+
 	Node * save, * expBlock = pt->temp;
-	
+
 	if (expTitleBlock (expBlock, objDest, &save) == true) {
-		
+
 		puts ("This block'll destroy.");
-		
+
 		destruction (&(pt->temp), objDest);
 		pt->size--;
-		
+
 		return;
-		
+
 	}
-	
+
 	else
 		puts ("So block wasn't found.");
-		
-	
+
+
 }
 
 
 void destruction (Node ** ptr, Object save) {
-		
+
 	if (strcmp (save.title, (( * ptr)->object).title) < 0)
 		destruction (&(( * ptr)->left), save);
-	
+
 	else if (strcmp (save.title, (( * ptr)->object).title) > 0)
 		destruction (&(( * ptr)->right), save);
-	
+
 	else {
-		
+
 		if (( * ptr)->left == NULL) {
-		
+
 			Node * z;
 			z =  * ptr;
 			(*ptr) = (*ptr)->right;
 			free (z);
-		
+
 		}
-	
+
 		else if (( * ptr)->right == NULL) {
-		
+
 			Node * z;
 			z =  * ptr;
 			(*ptr) = (*ptr)->left;
 			free (z);
-		
+
 		}
-		
+
 		else {
-			
+
 			Node * z;
 			z = * ptr;
 			addRight (&( * ptr)->right, &( * ptr)->left);
 			( * ptr) = ( * ptr)->left;
 			free (z);
-			
+
 		}
-		
+
 	}
-	
+
 }
 
 
 void addRight (Node ** Right, Node ** Left) {
-	
+
 	if ( ( * Left)->right == NULL)  {
-		
+
 		( * Left)->right = * Right;
-		
+
 		return;
-		
+
 	}
-	
+
 	addRight (Right, & ( * Left)->right);
-	
+
 }
 
 void expItem (Tree * pt) {
-	
+
 	if (Empty (pt) == true) {
-		
+
 		puts ("Tree is empty.");
-		
+
 		return;
-		
+
 	}
-	
+
 	Object objExp;
-	
+
 	puts ("Input title of exploring block:");
 	input (objExp.title);
-	
+
 	Node * save;
 	Node * expBlock = pt->temp;
-	
+
 	if (expTitleBlock (expBlock, objExp, &save) == true) {
-		
+
 		puts ("So block was found.");
 		printf ("Adress of founded block: %p\n", save);
-		
+
 	}
-	
+
 	else
 		puts ("So block wasn't found");
-		
-	
-	
+
+
+
 }
 
 
 
 
 bool expTitleBlock (Node * expBlock, Object objExp, Node ** save) {
-	
+
 	if (expBlock == NULL)
 		return false;
-	
+
 	if (strcmp (objExp.title, (expBlock->object).title) == 0) {
-		
+
 		* save = expBlock;
 		return true;
-		
+
 	}
-	
+
 	if (strcmp (objExp.title, (expBlock->object).title) < 0)
 		expTitleBlock (expBlock->left, objExp, save);
-	
+
 	else if (strcmp (objExp.title, (expBlock->object).title) > 0)
 		expTitleBlock (expBlock->right, objExp, save);
-	
-	
+
+
 }
 
 
 void AddItem (Tree * pt) {
-	
+
 	Object item;
-	
+
 	puts ("Input title of book:");
 	input (item.title);
 	puts ("Input author this book:");
 	input (item.author);
-	
-	
+
+
 	Node * mem;
 	mem = (Node * ) malloc (sizeof (Node));
-	
+
 	mem->object = item;
 	mem->left = NULL;
 	mem->right = NULL;
-	
+
 	if (pt->size == 0) {
-		
+
 		pt->temp = mem;
 		pt->size++;
-		
+
 		return;
-		
+
 	}
-	
+
 	else {
-		
+
 		if (expAddItem (pt->temp, mem) == true)
 			pt->size++;
-		
+
 		else
 			puts ("So element was already created");
-		
+
 	}
-	
-	
+
+
 }
 
 void InitializeTree (Tree * pt) {
-	
+
 	pt->size = 0;
 	pt->temp = NULL;
-	
+
 }
 
 
 bool expAddItem (Node * pt, Node * mem) {
-	
+
 	if (strcmp ((mem->object).title, (pt->object).title) < 0) {
-		
+
 		if (pt->left == NULL) {
-			
+
 			pt->left = mem;
-			
+
 			return true;
-			
+
 		}
-		
+
 		else
 			expAddItem (pt->left, mem);
-		
+
 	}
-	
+
 	else if (strcmp ((mem->object).title, (pt->object).title) > 0) {
-		
+
 		if (pt->right == NULL) {
-			
+
 			pt->right = mem;
-			
+
 			return true;
-			
+
 		}
-		
+
 		else
 			expAddItem (pt->right, mem);
-		
+
 	}
-	
+
 	else
 		return false;
-	
+
 }
 
 
 void Ignore (Tree * pt) {
-	
+
 	return;
-	
+
 }
 
 
 bool Empty (Tree * pt) {
-	
+
 	return (pt->size == 0) ? true : false;
-	
+
 }
 
 
@@ -380,7 +402,7 @@ char menu (Tree * pt) {
 	puts ("                  MENU:                  ");
 	putchar ('\n');
 	puts ("a) Add items;                s) Seek item;");
-	puts ("f) Check full list;                       ");
+	puts ("c) Check full list;                       ");
 	puts ("d) Destroy node;             q) Exit.     ");
 	putchar ('\n');
 	puts (FRAME);
