@@ -47,6 +47,9 @@ void destruction (Node ** ptr, Object save);
 void fullDestruction (Node ** ptr);
 void addRight (Node ** Right, Node ** Left);
 void fullExplore (Node * x);
+void dump (Tree * pt);
+void dumpHelp (Node ** memNode);
+void record (Node * x, FILE * fp);
 
 
 int main (void) {
@@ -83,6 +86,9 @@ int main (void) {
     		case 'd': pr = destroyItem;
     				  break;
 
+        	case 'f': pr = dump;
+                      break;
+
     		default:  pr = Ignore;
 					  break;
 
@@ -90,24 +96,63 @@ int main (void) {
 
     	( * pr) (&tree);
 
-
-    	printf ("Root adress: %p\n", tree.temp);
-
-    	/*
-
-      	printf ("left-branch adress: %p\n", (tree.temp)->left);
-      	printf ("right-branch adress: %p\n", (tree.temp)->right);
-
-		*/
-
     }
-
 
 	return 0;
 
 }
 
 
+/* Operation: Devastates the tree.                                */
+/* Predconditions: The function gets a pointer to the tree.       */
+/* Postconditions: Tree is empty.                                 */
+void dump (Tree * pt) {
+
+    if (pt->size == 0) {
+
+        puts ("Tree is empty.");
+
+        return;
+
+    }
+
+    Node * z = pt->temp;
+
+    while (z != NULL)
+        dumpHelp (&z);
+
+    pt->size = 0;
+    pt->temp = NULL;
+
+}
+
+
+/* Operation: It helps "The dump" function empty the tree.        */
+/* Predconditions: The function gets a pointer on pointer         */
+/* to the main node of the tree.                                  */
+/* Postconditions: Tree is empty.                                 */
+void dumpHelp (Node ** memNode) {
+
+    if (( * memNode)->left == NULL && ( * memNode)->right == NULL) {
+
+        * memNode = NULL;
+
+        return;
+
+    }
+
+    if ((* memNode)->left != NULL)
+        dumpHelp (&(( * memNode)->left));
+
+    dumpHelp (&(( * memNode)->right));
+
+}
+
+
+/* Operation: It prints all tree blocks to the console.           */
+/* Predconditions: The function gets a pointer to the main node   */
+/* of the tree.                                                   */
+/* Postconditions: The tree is displayed.                         */
 void fullExplore (Node * x) {
 
 	if (x != NULL) {
@@ -126,6 +171,9 @@ void fullExplore (Node * x) {
 }
 
 
+/* Operation: The function removes selective tree blocks.         */
+/* Predconditions: The function gets a pointer of the tree.       */
+/* Postconditions: Sample block removed.                          */
 void destroyItem (Tree * pt) {
 
 	if (Empty (pt) == true) {
@@ -160,16 +208,11 @@ void destroyItem (Tree * pt) {
 }
 
 
-void fullExplore (Node * x) {
-
-	if (x != NULL) {
-    
-		fullExplore (x->left);
-		fullExplore (x->right);
-
-	}
-
-
+/* Operation: the function searches for the previously selected   */
+/* block and deletes it for right branch.                         */
+/* Predconditions: The function gets a pointer on pointer         */
+/* of the tree and researched object (block).                     */
+/* Postconditions: Sample block removed.                          */
 void destruction (Node ** ptr, Object save) {
 
 	if (strcmp (save.title, (( * ptr)->object).title) < 0)
@@ -213,6 +256,11 @@ void destruction (Node ** ptr, Object save) {
 }
 
 
+/* Operation: The function looks for the right place to           */
+/* join the branch.                                               */
+/* Predconditions: The function gets a pointer on pointer         */
+/* of the right-tree and pointer on pointer of the left-tree.     */
+/* Postconditions: The right branch joins in the right place.     */
 void addRight (Node ** Right, Node ** Left) {
 
 	if ( ( * Left)->right == NULL)  {
@@ -227,6 +275,10 @@ void addRight (Node ** Right, Node ** Left) {
 
 }
 
+
+/* Operation: Object search.                                      */
+/* Predconditions: The function gets a pointer of the tree.       */
+/* Postconditions: Searched object found.                         */
 void expItem (Tree * pt) {
 
 	if (Empty (pt) == true) {
@@ -260,8 +312,10 @@ void expItem (Tree * pt) {
 }
 
 
-
-
+/* Operation: Direct search of the object under study.            */
+/* Predconditions: The function gets a pointer of the exploring   */
+/* block, exploring block and saved pointer for explore.          */ 
+/* Postconditions: Searched object found.                         */
 bool expTitleBlock (Node * expBlock, Object objExp, Node ** save) {
 
 	if (expBlock == NULL)
@@ -284,6 +338,9 @@ bool expTitleBlock (Node * expBlock, Object objExp, Node ** save) {
 }
 
 
+/* Operation: Function Adds an object.                            */
+/* Predconditions: The function gets a pointer of the tree.       */
+/* Postconditions: Object added in the tree.                      */
 void AddItem (Tree * pt) {
 
 	Object item;
@@ -323,6 +380,12 @@ void AddItem (Tree * pt) {
 
 }
 
+
+/* Operation: the function initializes the tree at the             */
+/* very beginning of the program.                                  */
+/* Predconditions: The function gets a pointer of the tree.        */
+/* Postconditions: The tree is initialized with a null pointer     */
+/* and zero objects.                                               */
 void InitializeTree (Tree * pt) {
 
 	pt->size = 0;
@@ -331,6 +394,11 @@ void InitializeTree (Tree * pt) {
 }
 
 
+/* Operation: The function explores for a place to add an object.  */
+/* Predconditions: The function gets a pointer of the main node    */
+/* and pointer of the researched object.                           */
+/* Postconditions: if the location is found, then the function     */
+/* returns true.                                                   */
 bool expAddItem (Node * pt, Node * mem) {
 
 	if (strcmp ((mem->object).title, (pt->object).title) < 0) {
@@ -369,6 +437,9 @@ bool expAddItem (Node * pt, Node * mem) {
 }
 
 
+/* Operation: Function for ignore.                                */
+/* Predconditions: The function gets a pointer of the tree.       */
+/* Postconditions: switch ignore.                                 */
 void Ignore (Tree * pt) {
 
 	return;
@@ -376,6 +447,9 @@ void Ignore (Tree * pt) {
 }
 
 
+/* Operation: Check for emptiness.                                */
+/* Predconditions: The function gets a pointer of the tree.       */
+/* Postconditions: It returns true if the tree is empty.          */
 bool Empty (Tree * pt) {
 
 	return (pt->size == 0) ? true : false;
@@ -383,17 +457,29 @@ bool Empty (Tree * pt) {
 }
 
 
+/* Operation: MENU               .                                */
+/* Predconditions: The function gets a pointer of the tree.       */
+/* Postconditions: Launch menu.                                   */
 char menu (Tree * pt) {
 
 	char ch;
 
 	puts (FRAME);
-	puts ("                  MENU:                  ");
+	puts ("                     MENU:                      ");
 	putchar ('\n');
-	puts ("a) Add items;                s) Seek item;");
-	puts ("c) Check full list;                       ");
-	puts ("d) Destroy node;             q) Exit.     ");
+	puts ("a) Add items;                c) Check full list;");
+	puts ("d) Destroy node;             f) Full cleaning;  ");
+	puts ("s) Seek item;                r) Record tree;    ");
+  puts ("q) QUIT.                                        ");
 	putchar ('\n');
+  printf ("Root adress: %p\n", pt->temp);
+
+  /*
+
+    printf ("left-branch adress: %p\n", (tree.temp)->left);
+    printf ("right-branch adress: %p\n", (tree.temp)->right);
+
+*/
 	puts (FRAME);
 	putchar ('\n');
 	printf ("Amount of elements in the tree: %d\n", pt->size);
@@ -409,6 +495,9 @@ char menu (Tree * pt) {
 }
 
 
+/* Operation: This function fills the string.                     */
+/* Predconditions: This function gets pointer of string.          */
+/* Postconditions: This function return pointer of this string.   */
 char * input (char * str) {
 
   char ch;
