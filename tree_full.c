@@ -46,6 +46,7 @@ void destroyItem (Tree * pt);
 void destruction (Node ** ptr, Object save);
 void fullDestruction (Node ** ptr);
 void addRight (Node ** Right, Node ** Left);
+void fullExplore (Node * x);
 
 
 int main (void) {
@@ -58,6 +59,7 @@ int main (void) {
     /*##########################*/
 
     Tree tree;
+    Node * x;
 
     InitializeTree (&tree);
 
@@ -65,6 +67,10 @@ int main (void) {
     void ( * pr) (Tree * );
 
     while ((ch = menu (&tree)) != 'q') {
+
+    	if (ch == 'c')
+    		fullExplore (tree.temp);
+
 
     	switch (ch) {
 
@@ -84,15 +90,38 @@ int main (void) {
 
     	( * pr) (&tree);
 
+
     	printf ("Root adress: %p\n", tree.temp);
 
-      printf ("left-branch adress: %p\n", (tree.temp)->left);
-      printf ("right-branch adress: %p\n", (tree.temp)->right);
+    	/*
 
+      	printf ("left-branch adress: %p\n", (tree.temp)->left);
+      	printf ("right-branch adress: %p\n", (tree.temp)->right);
+
+		*/
 
     }
 
+
 	return 0;
+
+}
+
+
+void fullExplore (Node * x) {
+
+	if (x != NULL) {
+
+		printf ("Title of book: ");
+		puts ((x->object).title);
+		printf ("Author this book: ");
+		puts ((x->object).author);
+		putchar ('\n');
+
+		fullExplore (x->left);
+		fullExplore (x->right);
+
+	}
 
 }
 
@@ -129,6 +158,16 @@ void destroyItem (Tree * pt) {
 
 
 }
+
+
+void fullExplore (Node * x) {
+
+	if (x != NULL) {
+    
+		fullExplore (x->left);
+		fullExplore (x->right);
+
+	}
 
 
 void destruction (Node ** ptr, Object save) {
