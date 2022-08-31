@@ -46,8 +46,6 @@ void destroyItem (Tree * pt);
 void destruction (Node ** ptr, Object save);
 void fullDestruction (Node ** ptr);
 void addRight (Node ** Right, Node ** Left);
-void fullItems (Tree * pt);
-void fullExplore (Node ** pt);
 
 
 int main (void) {
@@ -71,19 +69,16 @@ int main (void) {
     	switch (ch) {
 
     		case 'a': pr = AddItem;
-    				      break;
+    				  break;
 
     		case 's': pr = expItem;
-    				      break;
+    				  break;
 
     		case 'd': pr = destroyItem;
-    				      break;
-
-    		case 'c': pr = fullItems;
-    				      break;
+    				  break;
 
     		default:  pr = Ignore;
-					        break;
+					  break;
 
     	}
 
@@ -91,58 +86,13 @@ int main (void) {
 
     	printf ("Root adress: %p\n", tree.temp);
 
-      label:
-
       printf ("left-branch adress: %p\n", (tree.temp)->left);
       printf ("right-branch adress: %p\n", (tree.temp)->right);
 
-      goto label;
 
     }
 
 	return 0;
-
-}
-
-
-void fullItems (Tree * mem) {
-
-    Node * z;
-    z = mem->temp;
-
-    if (mem->size == 0) {
-
-        puts ("Tree don't contain objects.");
-
-        return;
-
-     }
-
-    while (z != NULL)
-	     fullExplore (&z);
-
-}
-
-
-void fullExplore (Node ** mem) {
-
-    if (( * mem)->left == NULL && ( * mem)->right == NULL) {
-
-        printf ("Title of book: ");
-        puts ((( * mem)->object).title);
-        printf ("Author this book: ");
-        puts ((( * mem)->object).author);
-        putchar ('\n');
-        (* mem) = NULL;
-
-        return;
-
-    }
-
-    if (( * mem)->left != NULL)
-        fullExplore (&(( * mem)->left));
-
-    fullExplore (&(( * mem)->right));
 
 }
 
