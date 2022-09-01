@@ -1,8 +1,27 @@
+/* tree_full.c. This program can create a tree.  */
+/* In this program you can:                      */
+/* 1) add object in the tree;                    */
+/* 2) destroy node, which contain pointed        */
+/* element;                                      */
+/* 3) clean the tree full;                       */
+/* 4) start explore of pointed object;           */
+/* 5) see the list of the tree.                  */
+/*                                               */
+/* When program is showing, you can press "q"    */
+/* to quit.                                      */
+/*                                               */
+/* You can start to enjoy ;)                     */
+/* | | | | | | | | | | | | | | | | | | | | | | | */
+/* | | | | | | | | | | | | | | | | | | | | | | | */
+/* | | | | | | | | | | | | | | | | | | | | | | | */
+/* v v v v v v v v v v v v v v v v v v v v v v v */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <windows.h>
+
 
 #define FRAME "##########################################"
 #define LEN 50
@@ -33,6 +52,14 @@ typedef struct {
 } Tree;
 
 
+typedef struct {
+	
+	char title[LEN];
+	char author[LEN];
+	
+} Output;
+
+
 char menu (Tree * pt);
 char * input (char * str);
 void InitializeTree (Tree * pt);
@@ -49,7 +76,6 @@ void addRight (Node ** Right, Node ** Left);
 void fullExplore (Node * x);
 void dump (Tree * pt);
 void dumpHelp (Node ** memNode);
-void record (Node * x, FILE * fp);
 
 
 int main (void) {
@@ -78,19 +104,19 @@ int main (void) {
     	switch (ch) {
 
     		case 'a': pr = AddItem;
-    				  break;
+    			  break;
 
     		case 's': pr = expItem;
-    				  break;
+    			  break;
 
     		case 'd': pr = destroyItem;
-    				  break;
+    	 		  break;
 
         	case 'f': pr = dump;
-                      break;
+                          break;
 
     		default:  pr = Ignore;
-					  break;
+			  break;
 
     	}
 
@@ -469,17 +495,17 @@ char menu (Tree * pt) {
 	putchar ('\n');
 	puts ("a) Add items;                c) Check full list;");
 	puts ("d) Destroy node;             f) Full cleaning;  ");
-	puts ("s) Seek item;                r) Record tree;    ");
-  puts ("q) QUIT.                                        ");
+	puts ("s) Seek item;                q) QUIT;           ");
 	putchar ('\n');
-  printf ("Root adress: %p\n", pt->temp);
+  	printf ("Root adress: %p\n", pt->temp);
 
-  /*
+  	/*
 
     printf ("left-branch adress: %p\n", (tree.temp)->left);
     printf ("right-branch adress: %p\n", (tree.temp)->right);
 
-*/
+	*/
+	
 	puts (FRAME);
 	putchar ('\n');
 	printf ("Amount of elements in the tree: %d\n", pt->size);
