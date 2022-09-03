@@ -501,8 +501,8 @@ char menu (Tree * pt) {
 
   	/*
 
-    printf ("left-branch adress: %p\n", (tree.temp)->left);
-    printf ("right-branch adress: %p\n", (tree.temp)->right);
+    	printf ("left-branch adress: %p\n", (tree.temp)->left);
+    	printf ("right-branch adress: %p\n", (tree.temp)->right);
 
 	*/
 	
