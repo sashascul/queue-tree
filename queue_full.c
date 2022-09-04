@@ -40,6 +40,9 @@ bool exploreQueue (Node * pt, Node * mem);
 void Ignore (Queue * pt);
 void list (Node * pt, int i);
 void listPrint (Queue * pt);
+void destroyItem (Queue * pt);
+void destroyNode (Queue * pr, Node ** pt);
+bool empty (Queue * pt);
 
 
 int main (void) {
@@ -59,6 +62,9 @@ int main (void) {
             
             case 'l': pr = listPrint;
             		  break;
+            		  
+            case 'd': pr = destroyItem;
+            		  break;
 
             default:  pr = Ignore;
                       break;
@@ -69,7 +75,6 @@ int main (void) {
 
     }
 
-
     puts ("Program the end!");
 
 
@@ -78,37 +83,40 @@ int main (void) {
 }
 
 
-void destroyElement (Queue * pt) {
+/* Operation: This function destroy the block.                    */
+/* Predconditions: This function gets pointer of the queue.       */
+/* Postconditions: This function uses other function.             */
+void destroyItem (Queue * pt) {
 	
-	bool flag = false;
-	
-	expDestroy (pt, pt->next, flag);
-	
+	destroyNode (pt, &(pt->node));
 	
 }
 
 
-void expDestroy (Node * pt, Node * save, bool flag) {
+/* Operation: This function destroy the block.                    */
+/* Predconditions: This function gets pointer of the queue and    */
+/* pointer on pointer of the main node.                           */ 
+/* Postconditions: The queue of shifting on one cell right.       */
+void destroyNode (Queue * pr, Node ** pt) {
 	
-	if (flag == true) {
+	if (empty (pr) == true) {
 		
-		pt = save;
-		free (save);
+		puts ("Tree is empty");
+		return;
 		
 	}
 	
-	if (pt->next == NULL)
-		return;
-		
-	save = pt;
-	flag = true;
-	
-	expDestroy (pt->next, save, flag);
-	
+	Node * save = * pt;
+	* pt = ( * pt)->next;
+	free (save);
+	pr->size --;
 	
 }
 
 
+/* Operation: Ignore.                                             */
+/* Predconditions: This function gets pointer of the queue.       */
+/* Postconditions: Output message about not finding variant.      */
 void Ignore (Queue * pt) {
 
     puts ("So variant of menu don't found.");
@@ -117,6 +125,9 @@ void Ignore (Queue * pt) {
 }
 
 
+/* Operation: This function initializes the tree.                 */
+/* Predconditions: This function gets pointer of the queue.       */
+/* Postconditions: NULL-initialization.                           */
 void InitializeQueue (Queue * pt) {
 
     pt->node = NULL;
@@ -125,6 +136,9 @@ void InitializeQueue (Queue * pt) {
 }
 
 
+/* Operation: This function can add the block.                    */
+/* Predconditions: This function gets pointer of the queue.       */
+/* Postconditions: Element was add in the tree.                   */
 void AddItem (Queue * pt) {
 
     Object object;
@@ -156,7 +170,18 @@ void AddItem (Queue * pt) {
 }
 
 
+/* Operation: This function can print list with all objects and   */
+/* allocates memory for a list.                                   */
+/* Predconditions: This function gets pointer of the queue.       */
+/* Postconditions: List was print.                                */
 void listPrint (Queue * pt) {
+	
+	if (empty (pt) == true) {
+		
+		puts ("Tree is empty");
+		return;
+		
+	}
 	
 	Node * mem;
 	mem = pt->node;
@@ -167,6 +192,10 @@ void listPrint (Queue * pt) {
 }
 
 
+/* Operation: This function print a list.                         */
+/* Predconditions: This function gets pointer of the allocated    */
+/* memory and integer value.                                      */
+/* Postconditions: List was print.                                */
 void list (Node * pt, int i) {
 	
 	printf ("Title %d: ", i);
@@ -183,6 +212,10 @@ void list (Node * pt, int i) {
 }
 
 
+/* Operation: This function explores the block.                   */
+/* Predconditions: This function gets pointer of the tree         */
+/* and pointer of the allocated memory.                           */
+/* Postconditions: Desired object was found.                      */
 bool exploreQueue (Node * pt, Node * mem) {
 
     if (strcmp ((pt->object).title, (mem->object).title) == 0) {
@@ -204,6 +237,20 @@ bool exploreQueue (Node * pt, Node * mem) {
 }
 
 
+
+/* Operation: Check for emptiness.                                */
+/* Predconditions: The function gets a pointer of the queue.      */
+/* Postconditions: It returns true if the queue is empty.         */
+bool empty (Queue * pt) {
+	
+	return (pt->size == 0) ? true : false;
+	
+}
+
+
+/* Operation: MENU               .                                */
+/* Predconditions: The function gets a pointer of the queue.      */
+/* Postconditions: Launch menu.                                   */
 char menu (Queue * pt) {
 
     char ch;
