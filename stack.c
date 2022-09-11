@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <windows.h>
 
+
 #define FRAME "##########################################"
 #define LEN 50
 
@@ -37,8 +38,8 @@ char menu (Stack * st);
 void InitializeStack (Stack * st);
 void addNode (Node * pt, Node * mem);
 void AddItem (Stack * st);
-void list (Node * x);
-void destroyItem (Node ** del);
+void list (Node * x, Stack st);
+bool destroyItem (Node ** del);
 bool empty (Stack * st);
 void accDestroy (Stack * st);
 
@@ -57,10 +58,9 @@ int main (void) {
 					  break;
 					  
 			case 'd': accDestroy (&stack);
-					  stack.size--;
 					  break;
 			
-			case 'l': list (stack.temp);
+			case 'l': list (stack.temp, stack);
 					  break;
 			
 			default:  break;
@@ -68,6 +68,8 @@ int main (void) {
 		}
 		
 	}
+	
+	puts ("Program the end.");
 
 	return 0;
 	
@@ -91,12 +93,13 @@ void accDestroy (Stack * st) {
 		
 	}
 	
-	destroyItem (&(st->temp));
+	if (destroyItem (&(st->temp)) == true)
+		st->size--;
 	
 }
 
 
-void destroyItem (Node ** del) {
+bool destroyItem (Node ** del) {
 	
 	if (( * del)->next == NULL) {
 		
@@ -105,7 +108,7 @@ void destroyItem (Node ** del) {
 		* del = NULL;
 		free (dest);
 		
-		return;
+		return true;
 		
 	}
 	
@@ -163,22 +166,27 @@ void addNode (Node * pt, Node * mem) {
 }
 
 
-void list (Node * x) {
+void list (Node * x, Stack st) {
+	
+	if (st.size == 0) {
+		
+		puts ("Tree is empty.");
+		
+		return;
+		
+	}
 	
 	if (x != NULL) {
 		
 		puts ((x->object).title);
 		puts ((x->object).author);
 		putchar ('\n');
-		list (x->next);
+		list (x->next, st);
 		
 		return;
 		
 	}
-	
-	else 
-		puts ("Tree is empty.");
-	
+		
 }
 
 
@@ -203,7 +211,7 @@ char menu (Stack * st) {
     puts ("l) list;             q) QUIT.           ");
     puts (FRAME);
     putchar ('\n');
-    printf ("Amount of elements in the tree: %d\n", st->size);
+    printf ("Amount of elements in the stack: %d\n", st->size);
     puts ("Please, input one of the variant menu:");
 
     ch = getchar ();
